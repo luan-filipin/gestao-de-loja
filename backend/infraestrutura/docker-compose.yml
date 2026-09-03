@@ -8,18 +8,23 @@ services:
     container_name: postgres-estoque
     hostname: postgres-estoque
     restart: unless-stopped
+
     ports:
-      - "${ESTOQUE_PORT}:5432}"
+      - "${ESTOQUE_DB_PORT}:5432"
+
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${ESTOQUE_DB}
+
     volumes:
       - ./postgres-estoque-data:/var/lib/postgresql/data
+
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
+
     networks:
       - gestao-de-loja-network
