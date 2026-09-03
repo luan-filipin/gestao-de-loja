@@ -1,10 +1,10 @@
-package com.gestaodeloja.backend;
+package com.gestaodeloja.estoque;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BackendApplicationTests {
+class EstoqueApplicationTests {
 
     @Test
     void contextLoads() {
