@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.gestao-de-loja'
 version = '0.0.1-SNAPSHOT'
-description = 'backend'
+description = 'estoque'
 
 java {
     toolchain {
