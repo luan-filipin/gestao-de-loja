@@ -1,0 +1,59 @@
+:host { display: block; color: #4b3428; }
+.product-page { width: 100%; }
+.page-header { margin-bottom: 24px; }
+.eyebrow { color: #9b6c4d; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+h1 { margin: 5px 0 6px; font-size: clamp(26px, 4vw, 34px); line-height: 1.2; }
+.page-header p, .list-header p, .empty-state p { margin: 0; color: #806555; }
+
+.product-form { padding: 24px 0 30px; border-top: 1px solid #dfcfc1; border-bottom: 1px solid #dfcfc1; }
+.form-grid { display: grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap: 18px 20px; }
+.field { display: flex; min-width: 0; flex-direction: column; gap: 7px; color: #5b4032; font-size: 14px; }
+.field-name { grid-column: span 2; }
+.field-description { grid-column: span 3; }
+.field strong { color: #b45f45; }
+input, select, textarea { width: 100%; box-sizing: border-box; border: 1px solid #d1c0b2; border-radius: 6px; background: #fff; color: #4b3428; font: inherit; outline: none; transition: border-color .2s, box-shadow .2s; }
+input, select { height: 40px; padding: 0 11px; }
+textarea { min-height: 78px; padding: 10px 11px; resize: vertical; }
+input:focus, select:focus, textarea:focus { border-color: #b9825b; box-shadow: 0 0 0 3px rgba(185,130,91,.14); }
+::placeholder { color: #b19d8f; }
+.input-prefix { position: relative; }
+.input-prefix > span { position: absolute; top: 50%; left: 11px; color: #806555; transform: translateY(-50%); }
+.input-prefix input { padding-left: 39px; }
+
+.status-control { display: flex; align-self: end; align-items: center; gap: 9px; min-height: 78px; cursor: pointer; }
+.status-control input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.toggle { position: relative; width: 42px; height: 23px; flex: 0 0 auto; border-radius: 99px; background: #cbbcaf; }
+.toggle::after { position: absolute; top: 3px; left: 3px; width: 17px; height: 17px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(75,52,40,.24); content: ''; transition: transform .2s; }
+.status-control input:checked + .toggle { background: #a87553; }
+.status-control input:checked + .toggle::after { transform: translateX(19px); }
+
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+.form-actions button { min-height: 40px; padding: 0 17px; border: 1px solid transparent; border-radius: 7px; font: inherit; font-weight: 800; cursor: pointer; }
+.button-secondary { border-color: #d1c0b2 !important; background: transparent; color: #5b4032; }
+.button-primary { background: #a87553; color: #fff; }
+.button-primary:disabled { cursor: not-allowed; opacity: .5; }
+
+.created-products { margin-top: 34px; }
+.list-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+.list-header h2 { margin: 0 0 4px; font-size: 21px; }
+.counter { display: grid; min-width: 34px; height: 34px; place-items: center; border-radius: 50%; background: #e5d1bd; font-weight: 800; }
+.empty-state { display: grid; min-height: 180px; place-items: center; align-content: center; gap: 7px; border: 1px dashed #d5c1b1; border-radius: 10px; background: rgba(255,255,255,.45); text-align: center; }
+.empty-state > span { font-size: 28px; }
+.table-wrapper { overflow-x: auto; border: 1px solid #dfcfc1; border-radius: 10px; background: #fff; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 13px 16px; border-bottom: 1px solid #eee3d9; }
+th { background: #f5ece4; color: #806555; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+tbody tr:last-child td { border-bottom: 0; }
+td small { display: block; margin-top: 2px; color: #806555; }
+.status { display: inline-block; padding: 4px 9px; border-radius: 99px; background: #e4f1e7; color: #39704a; font-size: 12px; }
+.status.inactive { background: #eee9e5; color: #806555; }
+
+@media (max-width: 980px) {
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .field-description { grid-column: span 2; }
+}
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .field-name, .field-description { grid-column: auto; }
+  .form-actions button { flex: 1; }
+}

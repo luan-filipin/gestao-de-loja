@@ -1,0 +1,40 @@
+<aside class="sidebar">
+  <nav class="sidebar-nav">
+    <a routerLink="/dashboard" routerLinkActive="active">
+      <span class="icon">📊</span>
+      Dashboard
+    </a>
+
+    <button
+      type="button"
+      class="menu-trigger"
+      [class.open]="produtosAberto"
+      [attr.aria-expanded]="produtosAberto"
+      aria-controls="submenu-produtos"
+      (click)="alternarMenuProdutos()"
+    >
+      <span class="icon">📦</span>
+      <span>Produtos</span>
+      <span class="arrow" aria-hidden="true">
+        {{ produtosAberto ? '▴' : '▾' }}
+      </span>
+    </button>
+
+    <div
+      id="submenu-produtos"
+      class="submenu"
+      [class.open]="produtosAberto"
+      [attr.aria-hidden]="!produtosAberto"
+    >
+      <a routerLink="/produtos/cadastrar" routerLinkActive="active">
+        Cadastra produto
+      </a>
+      <a routerLink="/produtos/cadastrar-lote" routerLinkActive="active">
+        Cadastrar em lote
+      </a>
+      <a routerLink="/produtos/gerenciar" routerLinkActive="active">
+        Gerenciar produto
+      </a>
+    </div>
+  </nav>
+</aside>

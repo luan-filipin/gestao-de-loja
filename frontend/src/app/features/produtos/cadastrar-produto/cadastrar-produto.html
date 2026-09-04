@@ -1,0 +1,95 @@
+<section class="product-page">
+  <header class="page-header">
+    <span class="eyebrow">Produtos</span>
+    <h1>Cadastrar produto</h1>
+    <p>Preencha os dados para adicionar um novo produto.</p>
+  </header>
+
+  <form class="product-form" #formProduto="ngForm" (ngSubmit)="cadastrarProduto()">
+    <div class="form-grid">
+      <label class="field field-name">
+        <span>Nome <strong>*</strong></span>
+        <input type="text" name="nome" [(ngModel)]="produto.nome" placeholder="Nome do produto" required />
+      </label>
+      <label class="field">
+        <span>Apelido</span>
+        <input type="text" name="apelido" [(ngModel)]="produto.apelido" placeholder="Apelido" />
+      </label>
+      <label class="field">
+        <span>Categoria <strong>*</strong></span>
+        <select name="categoria" [(ngModel)]="produto.categoria" required>
+          <option value="" disabled>Selecione...</option>
+          <option value="Geral">Geral</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Quantidade <strong>*</strong></span>
+        <input type="number" name="quantidade" [(ngModel)]="produto.quantidade" min="0" placeholder="0" required />
+      </label>
+      <label class="field">
+        <span>Preço <strong>*</strong></span>
+        <div class="input-prefix">
+          <span>R$</span>
+          <input type="number" name="preco" [(ngModel)]="produto.preco" min="0" step="0.01" placeholder="0,00" required />
+        </div>
+      </label>
+      <label class="field">
+        <span>Estoque mínimo</span>
+        <input type="number" name="estoqueMinimo" [(ngModel)]="produto.estoqueMinimo" min="0" placeholder="0" />
+      </label>
+      <label class="field">
+        <span>Estoque máximo</span>
+        <input type="number" name="estoqueMaximo" [(ngModel)]="produto.estoqueMaximo" min="0" placeholder="0" />
+      </label>
+      <label class="field field-description">
+        <span>Descrição</span>
+        <textarea name="descricao" [(ngModel)]="produto.descricao" rows="3" placeholder="Descrição do produto"></textarea>
+      </label>
+      <label class="status-control">
+        <input type="checkbox" name="ativo" [(ngModel)]="produto.ativo" />
+        <span class="toggle" aria-hidden="true"></span>
+        <span>Ativo</span>
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button class="button-secondary" type="reset">Limpar</button>
+      <button class="button-primary" type="submit" [disabled]="formProduto.invalid">Cadastrar produto</button>
+    </div>
+  </form>
+
+  <section class="created-products">
+    <div class="list-header">
+      <div>
+        <h2>Produtos cadastrados</h2>
+        <p>Os produtos adicionados nesta sessão aparecerão abaixo.</p>
+      </div>
+      <span class="counter">{{ produtosCadastrados.length }}</span>
+    </div>
+
+    @if (produtosCadastrados.length === 0) {
+      <div class="empty-state">
+        <span>📦</span>
+        <strong>Nenhum produto cadastrado</strong>
+        <p>Preencha o formulário acima para visualizar um produto aqui.</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Produto</th><th>Categoria</th><th>Quantidade</th><th>Preço</th><th>Status</th></tr></thead>
+          <tbody>
+            @for (item of produtosCadastrados; track $index) {
+              <tr>
+                <td><strong>{{ item.nome }}</strong>@if (item.apelido) { <small>{{ item.apelido }}</small> }</td>
+                <td>{{ item.categoria }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>{{ item.preco == null ? '—' : 'R$ ' + item.preco.toFixed(2).replace('.', ',') }}</td>
+                <td><span class="status" [class.inactive]="!item.ativo">{{ item.ativo ? 'Ativo' : 'Inativo' }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</section>
