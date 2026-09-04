@@ -11,34 +11,117 @@
         <span>Nome <strong>*</strong></span>
         <input type="text" name="nome" [(ngModel)]="produto.nome" placeholder="Nome do produto" required />
       </label>
-      <label class="field">
-        <span>Apelido</span>
-        <input type="text" name="apelido" [(ngModel)]="produto.apelido" placeholder="Apelido" />
-      </label>
-      <label class="field">
-        <span>Categoria <strong>*</strong></span>
-        <select name="categoria" [(ngModel)]="produto.categoria" required>
+      <div class="field">
+        <span class="category-label">
+          <label for="categoria">Categoria <strong>*</strong></label>
+          <button type="button" class="add-category" aria-label="Criar nova categoria" (click)="abrirModalCategoria()">+</button>
+        </span>
+        <select id="categoria" name="categoria" [(ngModel)]="produto.categoria" required>
           <option value="" disabled>Selecione...</option>
-          <option value="Geral">Geral</option>
+          @for (categoria of categorias; track categoria.nome) {
+            <option [value]="categoria.nome">{{ categoria.nome }}</option>
+          }
         </select>
+      </div>
+      <label class="field">
+        <span class="field-label">
+          Quantidade <strong>*</strong>
+          <span class="field-help" tabindex="0" aria-describedby="quantidade-ajuda">
+            ?
+            <span id="quantidade-ajuda" class="tooltip" role="tooltip">
+              Informe somente o total, como 50, ou use caixas × unidades, como 2x25. Nesse exemplo, o total será de 50 unidades.
+            </span>
+          </span>
+        </span>
+        <input
+          type="text"
+          name="quantidade"
+          [ngModel]="quantidadeFormatada"
+          (ngModelChange)="calcularQuantidade($event)"
+          pattern="\d+([xX×]\d+)?"
+          placeholder="Ex.: 50 ou 2x25"
+          required
+        />
+        @if (resumoQuantidade) {
+          <small class="field-result">{{ resumoQuantidade }}</small>
+        }
       </label>
       <label class="field">
-        <span>Quantidade <strong>*</strong></span>
-        <input type="number" name="quantidade" [(ngModel)]="produto.quantidade" min="0" placeholder="0" required />
-      </label>
-      <label class="field">
-        <span>Preço <strong>*</strong></span>
+        <span class="field-label">
+          Preço pago <strong>*</strong>
+          <span class="field-help" tabindex="0" aria-describedby="preco-pago-ajuda">
+            ?
+            <span id="preco-pago-ajuda" class="tooltip" role="tooltip">
+              É o valor total pago pela compra. O sistema dividirá esse valor pela quantidade para descobrir o custo de cada unidade.
+            </span>
+          </span>
+        </span>
         <div class="input-prefix">
           <span>R$</span>
-          <input type="number" name="preco" [(ngModel)]="produto.preco" min="0" step="0.01" placeholder="0,00" required />
+          <input
+            type="text"
+            name="precoPago"
+            inputmode="decimal"
+            [ngModel]="precoPagoFormatado"
+            (ngModelChange)="formatarPrecoPago($event)"
+            (blur)="completarPrecoPago()"
+            placeholder="0,00"
+            required
+          />
         </div>
+        @if (resumoCustoUnitario) {
+          <small class="field-result">{{ resumoCustoUnitario }}</small>
+        }
       </label>
       <label class="field">
-        <span>Estoque mínimo</span>
+        <span class="field-label">
+          Preço venda <strong>*</strong>
+          <span class="field-help" tabindex="0" aria-describedby="preco-venda-ajuda">
+            ?
+            <span id="preco-venda-ajuda" class="tooltip" role="tooltip">
+              É o valor pelo qual você pretende vender uma unidade deste produto.
+            </span>
+          </span>
+        </span>
+        <div class="input-prefix">
+          <span>R$</span>
+          <input
+            type="text"
+            name="precoVenda"
+            inputmode="decimal"
+            [ngModel]="precoVendaFormatado"
+            (ngModelChange)="formatarPrecoVenda($event)"
+            (blur)="completarPrecoVenda()"
+            placeholder="0,00"
+            required
+          />
+        </div>
+        @if (resumoLucro) {
+          <small class="field-result profit" [class.loss]="lucroNegativo">{{ resumoLucro }}</small>
+        }
+      </label>
+      <label class="field">
+        <span class="field-label">
+          Estoque mínimo
+          <span class="field-help" tabindex="0" aria-describedby="estoque-minimo-ajuda">
+            ?
+            <span id="estoque-minimo-ajuda" class="tooltip" role="tooltip">
+              Quantidade mínima desejada em estoque. Ao atingir esse valor, o produto poderá gerar um alerta de reposição.
+            </span>
+          </span>
+        </span>
         <input type="number" name="estoqueMinimo" [(ngModel)]="produto.estoqueMinimo" min="0" placeholder="0" />
       </label>
       <label class="field">
-        <span>Estoque máximo</span>
+        <span class="field-label">
+          Estoque máximo
+          <span class="field-help" tabindex="0" aria-describedby="estoque-maximo-ajuda">
+            ?
+            <span id="estoque-maximo-ajuda" class="tooltip" role="tooltip">
+              Quantidade máxima desejada em estoque. Esse valor ajuda a evitar compras e armazenamento acima do necessário.
+            </span>
+          </span>
+        </span>
         <input type="number" name="estoqueMaximo" [(ngModel)]="produto.estoqueMaximo" min="0" placeholder="0" />
       </label>
       <label class="field field-description">
@@ -54,7 +137,7 @@
 
     <div class="form-actions">
       <button class="button-secondary" type="reset">Limpar</button>
-      <button class="button-primary" type="submit" [disabled]="formProduto.invalid">Cadastrar produto</button>
+      <button class="button-primary" type="submit" [disabled]="formProduto.invalid">Cadastrar</button>
     </div>
   </form>
 
@@ -76,14 +159,15 @@
     } @else {
       <div class="table-wrapper">
         <table>
-          <thead><tr><th>Produto</th><th>Categoria</th><th>Quantidade</th><th>Preço</th><th>Status</th></tr></thead>
+          <thead><tr><th>Produto</th><th>Categoria</th><th>Quantidade</th><th>Total pago</th><th>Venda/un.</th><th>Status</th></tr></thead>
           <tbody>
             @for (item of produtosCadastrados; track $index) {
               <tr>
-                <td><strong>{{ item.nome }}</strong>@if (item.apelido) { <small>{{ item.apelido }}</small> }</td>
+                <td><strong>{{ item.nome }}</strong></td>
                 <td>{{ item.categoria }}</td>
                 <td>{{ item.quantidade }}</td>
-                <td>{{ item.preco == null ? '—' : 'R$ ' + item.preco.toFixed(2).replace('.', ',') }}</td>
+                <td>{{ item.precoPago == null ? '—' : formatarMoedaExibicao(item.precoPago) }}</td>
+                <td>{{ item.precoVenda == null ? '—' : formatarMoedaExibicao(item.precoVenda) }}</td>
                 <td><span class="status" [class.inactive]="!item.ativo">{{ item.ativo ? 'Ativo' : 'Inativo' }}</span></td>
               </tr>
             }
@@ -93,3 +177,35 @@
     }
   </section>
 </section>
+
+@if (modalCategoriaAberto) {
+  <div class="modal-backdrop" (click)="fecharModalCategoria()">
+    <section
+      class="category-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-categoria-titulo"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal-header">
+        <div>
+          <span class="eyebrow">Categorias</span>
+          <h2 id="modal-categoria-titulo">Criar categoria</h2>
+        </div>
+        <button type="button" class="close-modal" aria-label="Fechar" (click)="fecharModalCategoria()">×</button>
+      </header>
+
+      <form #formCategoria="ngForm" (ngSubmit)="criarCategoria()">
+        <label class="field">
+          <span>Nome <strong>*</strong></span>
+          <input type="text" name="nomeCategoria" [(ngModel)]="novaCategoria.nome" placeholder="Ex.: Acessórios" required />
+        </label>
+
+        <footer class="modal-actions">
+          <button type="button" class="button-secondary" (click)="fecharModalCategoria()">Cancelar</button>
+          <button type="submit" class="button-primary" [disabled]="formCategoria.invalid">Criar</button>
+        </footer>
+      </form>
+    </section>
+  </div>
+}
