@@ -31,8 +31,8 @@ public class Produto {
     @Column(nullable = false)
     private int quantidade;
 
-    @Column(nullable = false, name = "preco_pago")
-    private BigDecimal precoPago;
+    @Column(nullable = false, name = "valor_nota_fiscal")
+    private BigDecimal valorNotaFiscal;
 
     @Column(nullable = false, name = "preco_venda")
     private BigDecimal precoVenda;
