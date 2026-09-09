@@ -1,0 +1,65 @@
+package com.gestaodeloja.estoque.fixture;
+
+import com.gestaodeloja.estoque.domain.Categoria;
+import com.gestaodeloja.estoque.domain.Produto;
+import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public class ProdutoFixture {
+
+    public static Produto criaProduto(
+            Long id,
+            String nome,
+            int quantidade,
+            BigDecimal valorNotaFiscal,
+            BigDecimal precoVenda,
+            int estoqueMinimo,
+            int estoqueMaximo,
+            String descricao,
+            boolean ativo,
+            LocalDateTime dataCadastro,
+            LocalDateTime dataAtualizacao) {
+        Categoria categoria = Categoria.builder()
+                .id(1L)
+                .nome("Geral")
+                .build();
+
+        return Produto.builder()
+                .id(id)
+                .nome(nome)
+                .categoria(categoria)
+                .quantidade(quantidade)
+                .valorNotaFiscal(valorNotaFiscal)
+                .precoVenda(precoVenda)
+                .estoqueMinimo(estoqueMinimo)
+                .estoqueMaximo(estoqueMaximo)
+                .descricao(descricao)
+                .ativo(ativo)
+                .dataCadastro(dataCadastro)
+                .dataAtualizacao(dataAtualizacao)
+                .build();
+    }
+
+    public static ProdutoRequestDto criaProdutoRequestDto(
+            String nome,
+            Long idCategoria,
+            int quantidade,
+            BigDecimal valorNotaFiscal,
+            BigDecimal precoVenda,
+            int estoqueMinimo,
+            int estoqueMaximom,
+            String descricao) {
+
+        return new ProdutoRequestDto(
+                nome,
+                idCategoria,
+                quantidade,
+                valorNotaFiscal,
+                precoVenda,
+                estoqueMinimo,
+                estoqueMaximom,
+                descricao);
+    }
+}
