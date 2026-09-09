@@ -5,6 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-   <!-- <include file="/db/changes/create-table-pedido-cozinha.xml"/>-->
+    <include file="/db/changes/cria-tabela-produto.xml"/>
+    <include file="/db/changes/cria-tabela-categoria.xml"/>
 
 </databaseChangeLog>
