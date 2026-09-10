@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <produto id="1"
+             nome="Coca-cola"
+             id_categoria="1"
+             quantidade="100"
+             valor_nota_fiscal="1000.00"
+             preco_venda="8.00"
+             estoque_minimo="10"
+             estoque_maximo="100"
+             descricao="Teste descricao Coca-cola"
+             ativo="true"
+             data_cadastro="2026-09-10 09:00:00"
+    />
+
+</dataset>
