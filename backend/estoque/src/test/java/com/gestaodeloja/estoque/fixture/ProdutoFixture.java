@@ -45,11 +45,11 @@ public class ProdutoFixture {
     public static ProdutoRequestDto criaProdutoRequestDto(
             String nome,
             Long idCategoria,
-            int quantidade,
+            Integer quantidade,
             BigDecimal valorNotaFiscal,
             BigDecimal precoVenda,
-            int estoqueMinimo,
-            int estoqueMaximom,
+            Integer estoqueMinimo,
+            Integer estoqueMaximom,
             String descricao) {
 
         return new ProdutoRequestDto(
