@@ -1,3 +1,4 @@
 .env
 infraestrutura/postgres-estoque-data/
 .idea
+backend/.idea
