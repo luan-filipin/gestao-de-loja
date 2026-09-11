@@ -1,6 +1,7 @@
 package com.gestaodeloja.estoque.service.validator;
 
 import com.gestaodeloja.estoque.domain.Categoria;
+import com.gestaodeloja.estoque.exception.CategoriaJaExistePeloNome;
 import com.gestaodeloja.estoque.exception.CategoriaNaoExistePeloIdException;
 import com.gestaodeloja.estoque.repository.CategoriaRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,5 +16,11 @@ public class CategoriaValidator {
     public Categoria validaCategoriaExistente(Long id) {
         return categoriaRepository.findById(id).orElseThrow(
                 CategoriaNaoExistePeloIdException::new);
+    }
+
+    public void validaSeCategoriaJaExistePeloNome(String nome) {
+        if (categoriaRepository.existsByNome(nome)) {
+            throw new CategoriaJaExistePeloNome();
+        }
     }
 }

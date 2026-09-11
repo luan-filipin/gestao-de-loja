@@ -14,19 +14,19 @@ public record ProdutoRequestDto(
         Long idCategoria,
 
         @NotNull(message = "O campo quantidade é obrigatorio.")
-        int quantidade,
+        Integer quantidade,
 
         @NotNull(message = "O campo preco pago é obrigatorio.")
         BigDecimal valorNotaFiscal,
 
-        @NotNull(message = "O campo preco venda é obrigatorio")
+        @NotNull(message = "O campo preco venda é obrigatorio.")
         BigDecimal precoVenda,
 
         @NotNull(message = "O campo estoque minimo é obrigatorio.")
-        int estoqueMinimo,
+        Integer estoqueMinimo,
 
-        @NotNull(message = "o campo estoque maximo é obrigatorio.")
-        int estoqueMaximo,
+        @NotNull(message = "O campo estoque maximo é obrigatorio.")
+        Integer estoqueMaximo,
 
         String descricao
 ) {
