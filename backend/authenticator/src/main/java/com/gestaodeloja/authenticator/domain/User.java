@@ -1,6 +1,6 @@
-package domain;
+package com.gestaodeloja.authenticator.domain;
 
-import domain.enums.UserRole;
+import com.gestaodeloja.authenticator.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,19 +18,20 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "user_name", nullable = false, unique = true, length = 50)
     private String userName;
 
     @Column(nullable = false, length = 100)
     private String password;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
 

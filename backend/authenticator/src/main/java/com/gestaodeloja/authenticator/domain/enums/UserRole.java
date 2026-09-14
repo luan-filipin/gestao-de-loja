@@ -1,4 +1,4 @@
-package domain.enums;
+package com.gestaodeloja.authenticator.domain.enums;
 
 public enum UserRole {
 
