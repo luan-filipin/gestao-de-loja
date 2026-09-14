@@ -43,4 +43,16 @@ class UserRepositoryTest {
         Optional<User> user = userRepository.findByUserName("nome.inexistente");
         assertThat(user).isEmpty();
     }
+
+    @Test
+    void deveRetornarTrueSeUserNameExistir() {
+        boolean existe = userRepository.existsByUserName("joao.pedro");
+        assertThat(existe).isTrue();
+    }
+
+    @Test
+    void deveRetornarFalseSeUserNameNaoExistir() {
+        boolean existe = userRepository.existsByUserName("nome.inexistente");
+        assertThat(existe).isFalse();
+    }
 }

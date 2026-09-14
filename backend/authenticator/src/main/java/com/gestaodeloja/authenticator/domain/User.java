@@ -2,9 +2,7 @@ package com.gestaodeloja.authenticator.domain;
 
 import com.gestaodeloja.authenticator.domain.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.jspecify.annotations.NullMarked;
@@ -19,6 +17,8 @@ import java.util.List;
 @NullMarked
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "users")

@@ -2,6 +2,7 @@ package com.gestaodeloja.authenticator.fixture;
 
 import com.gestaodeloja.authenticator.domain.User;
 import com.gestaodeloja.authenticator.domain.enums.UserRole;
+import com.gestaodeloja.authenticator.dto.request.CreateUserRequestDto;
 
 import java.time.LocalDateTime;
 
@@ -24,5 +25,9 @@ public class UserFixture {
                 .created(created)
                 .updated(updated)
                 .build();
+    }
+
+    public static CreateUserRequestDto criaCreateUserRequestDto(String userName, String password, UserRole role) {
+        return new CreateUserRequestDto(userName, password, role);
     }
 }
