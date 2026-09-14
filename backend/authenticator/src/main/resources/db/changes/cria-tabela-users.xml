@@ -32,7 +32,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="update" type="TIMESTAMP">
+            <column name="updated" type="TIMESTAMP">
             </column>
 
 
