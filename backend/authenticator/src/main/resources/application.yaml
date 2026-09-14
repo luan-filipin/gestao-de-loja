@@ -9,3 +9,6 @@ spring:
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
