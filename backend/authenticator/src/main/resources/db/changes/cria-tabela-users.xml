@@ -24,6 +24,18 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="enabled" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="update" type="TIMESTAMP">
+            </column>
+
+
         </createTable>
     </changeSet>
 </databaseChangeLog>

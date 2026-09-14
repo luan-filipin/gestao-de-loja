@@ -2,6 +2,7 @@ package com.gestaodeloja.authenticator.service;
 
 import com.gestaodeloja.authenticator.domain.User;
 import com.gestaodeloja.authenticator.domain.enums.UserRole;
+import com.gestaodeloja.authenticator.fixture.UserFixture;
 import com.gestaodeloja.authenticator.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +36,14 @@ class UserServiceTest {
     @Test
     void deveBuscarUsuarioPeloUserName() {
 
-        User usuario = new User(1L, "joao.pedro", "123456", UserRole.USER);
+        User usuario = UserFixture.criaUser(
+                1L,
+                "joao.pedro",
+                "123456",
+                UserRole.USER,
+                true,
+                LocalDateTime.of(2026, 9, 14, 1, 1, 1),
+                null);
         when(userRepository.findByUserName("joao.pedro")).thenReturn(Optional.of(usuario));
 
         UserDetails result = userService.loadUserByUsername("joao.pedro");
