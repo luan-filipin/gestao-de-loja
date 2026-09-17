@@ -12,3 +12,7 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/changelog-master.xml
+
+jwt:
+  private-key: classpath:keys/private.pem
+  public-key: classpath:keys/public.pem
