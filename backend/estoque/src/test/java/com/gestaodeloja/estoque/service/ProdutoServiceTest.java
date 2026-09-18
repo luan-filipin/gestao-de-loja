@@ -2,6 +2,7 @@ package com.gestaodeloja.estoque.service;
 
 import com.gestaodeloja.estoque.domain.Categoria;
 import com.gestaodeloja.estoque.domain.Produto;
+import com.gestaodeloja.estoque.dto.request.ProdutoFiltrosRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
 import com.gestaodeloja.estoque.dto.response.ProdutoResponseDto;
 import com.gestaodeloja.estoque.exception.CategoriaNaoExistePeloIdException;
@@ -20,14 +21,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -133,5 +140,72 @@ class ProdutoServiceTest {
                 .hasMessage("A categoria não existe.");
 
         verify(categoriaRepository).findById(1L);
+    }
+
+    @Test
+    void deveBuscarProdutosComSucesso() {
+
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Produto> produtos = List.of(
+                ProdutoFixture.criaProduto(1L, "Coca-Cola", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null),
+                ProdutoFixture.criaProduto(2L, "Fanta", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null)
+        );
+
+        Page<Produto> page = ProdutoFixture.criaPageDeProdutos(pageable, produtos);
+
+        when(produtoRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+
+        ProdutoFiltrosRequestDto filtros = new ProdutoFiltrosRequestDto(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Page<ProdutoResponseDto> result = produtoService.buscaProdutos(pageable, filtros);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(2);
+        assertThat(result.getContent()).hasSize(2);
+
+    }
+
+    @Test
+    void deveBuscarPageDeProdutoPorId() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Produto> produtos = List.of(
+                ProdutoFixture.criaProduto(1L, "Coca-Cola", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null)
+        );
+
+        Page<Produto> page = ProdutoFixture.criaPageDeProdutos(pageable, produtos);
+
+        when(produtoRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
+
+        ProdutoFiltrosRequestDto filtros = new ProdutoFiltrosRequestDto(
+                1L,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Page<ProdutoResponseDto> result = produtoService.buscaProdutos(pageable, filtros);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent()).hasSize(1);
     }
 }

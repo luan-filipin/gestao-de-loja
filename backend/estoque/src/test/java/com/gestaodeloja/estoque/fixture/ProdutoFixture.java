@@ -3,9 +3,13 @@ package com.gestaodeloja.estoque.fixture;
 import com.gestaodeloja.estoque.domain.Categoria;
 import com.gestaodeloja.estoque.domain.Produto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ProdutoFixture {
 
@@ -61,5 +65,16 @@ public class ProdutoFixture {
                 estoqueMinimo,
                 estoqueMaximom,
                 descricao);
+    }
+
+    public static Page<Produto> criaPageDeProdutos(
+            Pageable pageable,
+            List<Produto> produtos) {
+
+        return new PageImpl<>(
+                produtos,
+                pageable,
+                produtos.size()
+        );
     }
 }
