@@ -70,4 +70,4 @@ jobs:
           echo "${{ secrets.JWT_PUBLIC_KEY }}" > src/main/resources/keys/public.pem
 
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew check
