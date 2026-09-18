@@ -17,6 +17,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -126,5 +127,45 @@ class ProdutoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.mensagem").value("Campos inválidos"))
                 .andExpect(jsonPath("$.erros.length()").value(7));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveRetornarPageDeProdutosPeloIdComSucesso() throws Exception {
+
+        mockMvc.perform(get("/api/produto")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("id", "2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].nome").value("Fanta"))
+        ;
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveRetornarTodosOsProdutosComsucesso() throws Exception {
+        mockMvc.perform(get("/api/produto")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveLancarErroQuandoCampoForDoTipoDiferente() throws Exception {
+        mockMvc.perform(get("/api/produto")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("id", "adc")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value("Campos inválidos"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.path").value("/api/produto"));
     }
 }
