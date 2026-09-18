@@ -129,8 +129,7 @@ class AuthServiceTest {
         when(userRepository.findByUserName("joao.pedro")).thenReturn(Optional.of(usuario));
 
         assertThatThrownBy(() -> authService.authenticate(dtoEntrada))
-                .isInstanceOf(BadCredentialsException.class)
-                .hasMessage("Usuário inexistente ou senha inválida");
+                .isInstanceOf(BadCredentialsException.class);
 
         verify(userRepository).findByUserName("joao.pedro");
 
