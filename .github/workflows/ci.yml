@@ -63,5 +63,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      - name: Create JWT keys
+        run: |
+          mkdir -p src/main/resources/keys
+          echo "${{ secrets.JWT_PRIVATE_KEY }}" > src/main/resources/keys/private.pem
+          echo "${{ secrets.JWT_PUBLIC_KEY }}" > src/main/resources/keys/public.pem
+
       - name: Run tests
         run: ./gradlew test
