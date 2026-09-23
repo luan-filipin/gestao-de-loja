@@ -5,6 +5,7 @@ import com.gestaodeloja.estoque.dto.response.ErroResponseDto;
 import com.gestaodeloja.estoque.exception.CategoriaJaExistePeloNome;
 import com.gestaodeloja.estoque.exception.CategoriaNaoExistePeloIdException;
 import com.gestaodeloja.estoque.exception.ProdutoJaExistePeloNomeException;
+import com.gestaodeloja.estoque.exception.ProdutoNaoExisteException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,15 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT.value(),
                 request.getRequestURI());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(erroResponseDto);
+    }
+
+    @ExceptionHandler(ProdutoNaoExisteException.class)
+    public ResponseEntity<ErroResponseDto> handlerProdutoNaoExiste(ProdutoNaoExisteException e, HttpServletRequest request) {
+        ErroResponseDto erroResponseDto = new ErroResponseDto(
+                e.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroResponseDto);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

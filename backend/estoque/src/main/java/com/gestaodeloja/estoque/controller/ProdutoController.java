@@ -1,7 +1,9 @@
 package com.gestaodeloja.estoque.controller;
 
+import com.gestaodeloja.estoque.dto.request.ProdutoAtualizadoRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoFiltrosRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
+import com.gestaodeloja.estoque.dto.response.ProdutoInativoResponseDto;
 import com.gestaodeloja.estoque.dto.response.ProdutoResponseDto;
 import com.gestaodeloja.estoque.service.ProdutoService;
 import jakarta.validation.Valid;
@@ -28,5 +30,15 @@ public class ProdutoController {
     @GetMapping()
     public ResponseEntity<Page<ProdutoResponseDto>> buscaProdutos(Pageable pageable, @ModelAttribute ProdutoFiltrosRequestDto filtros) {
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.buscaProdutos(pageable, filtros));
+    }
+
+    @PatchMapping("/inativar/{id}")
+    public ResponseEntity<ProdutoInativoResponseDto> desativarProduto(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(produtoService.desativaProduto(id));
+    }
+
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<ProdutoResponseDto> atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoAtualizadoRequestDto dto) {
+        return ResponseEntity.status(HttpStatus.OK).body(produtoService.atualizaProduto(id, dto));
     }
 }

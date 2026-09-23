@@ -2,6 +2,7 @@ package com.gestaodeloja.estoque.fixture;
 
 import com.gestaodeloja.estoque.domain.Categoria;
 import com.gestaodeloja.estoque.domain.Produto;
+import com.gestaodeloja.estoque.dto.request.ProdutoAtualizadoRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -76,5 +77,25 @@ public class ProdutoFixture {
                 pageable,
                 produtos.size()
         );
+    }
+
+    public static ProdutoAtualizadoRequestDto criaProdutoAtualizadoRequestDto(
+            String nome,
+            Long idCategoria,
+            Integer quantidade,
+            BigDecimal valorNotaFiscal,
+            BigDecimal precoVenda,
+            Integer estoqueMinimo,
+            Integer estoqueMaximom,
+            String descricao) {
+        return new ProdutoAtualizadoRequestDto(
+                nome,
+                idCategoria,
+                quantidade,
+                valorNotaFiscal,
+                precoVenda,
+                estoqueMinimo,
+                estoqueMaximom,
+                descricao);
     }
 }

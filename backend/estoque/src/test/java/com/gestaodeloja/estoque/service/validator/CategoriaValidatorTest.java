@@ -33,7 +33,7 @@ class CategoriaValidatorTest {
 
         when(categoriaRepository.findById(id)).thenReturn(Optional.of(categoria));
 
-        Categoria result = categoriaValidator.validaCategoriaExistente(id);
+        Categoria result = categoriaValidator.validaCategoriaExistentePeloId(id);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
@@ -46,7 +46,7 @@ class CategoriaValidatorTest {
         Long id = 99L;
         when(categoriaRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> categoriaValidator.validaCategoriaExistente(id))
+        assertThatThrownBy(() -> categoriaValidator.validaCategoriaExistentePeloId(id))
                 .isInstanceOf(CategoriaNaoExistePeloIdException.class)
                 .hasMessage("A categoria não existe.");
 
@@ -74,5 +74,28 @@ class CategoriaValidatorTest {
                 .doesNotThrowAnyException();
 
         verify(categoriaRepository).existsByNome(nome);
+    }
+
+    @Test
+    void deveRetornarTrueSeCategoriaJaExistirSemRetorno() {
+        Long id = 1L;
+        when(categoriaRepository.existsById(id)).thenReturn(false);
+
+        assertThatCode(() -> categoriaValidator.validaSeCateogriaExisteSemRetorno(id))
+                .isInstanceOf(CategoriaNaoExistePeloIdException.class)
+                .hasMessage("A categoria não existe.");
+
+        verify(categoriaRepository).existsById(id);
+    }
+
+    @Test
+    void deveRetornarFalseSeCategoriaNaoExistirSemRetorno() {
+        Long id = 1L;
+        when(categoriaRepository.existsById(id)).thenReturn(true);
+
+        assertThatCode(() -> categoriaValidator.validaSeCateogriaExisteSemRetorno(id))
+                .doesNotThrowAnyException();
+
+        verify(categoriaRepository).existsById(id);
     }
 }
