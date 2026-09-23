@@ -1,6 +1,7 @@
 package com.gestaodeloja.estoque.controller;
 
 import com.gestaodeloja.estoque.config.PostgresTestContainer;
+import com.gestaodeloja.estoque.dto.request.ProdutoAtualizadoRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
 import com.gestaodeloja.estoque.fixture.ProdutoFixture;
 import com.github.database.rider.core.api.configuration.DBUnit;
@@ -185,5 +186,75 @@ class ProdutoControllerTest {
     void deveLancarExceptionSeProdutoNaoExistir() throws Exception {
         mockMvc.perform(patch("/api/produto/inativar/99"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveAtualizarProdutoComSucesso() throws Exception {
+
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                50,
+                "Ouro verde 2L");
+
+        mockMvc.perform(put("/api/produto/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dtoEntrada)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value("Ouro verde"));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveLancarExceptionSeProdutoNaoExistirParaAtualizar() throws Exception {
+
+        Long id = 99L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                50,
+                "Ouro verde 2L");
+
+        mockMvc.perform(put("/api/produto/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dtoEntrada)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.mensagem").value("Não existe um produto com esse id."))
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.path").value("/api/produto/atualizar/99"));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveLancarExceptionSeProdutoJaExistirPeloNome() throws Exception {
+
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Coca-cola",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                50,
+                "Ouro verde 2L");
+
+        mockMvc.perform(put("/api/produto/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dtoEntrada)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.mensagem").value("Ja existe um produto cadastrado com esse nome."))
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.path").value("/api/produto/atualizar/1"));
     }
 }

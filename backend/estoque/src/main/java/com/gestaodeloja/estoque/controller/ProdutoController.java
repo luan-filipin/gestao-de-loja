@@ -1,5 +1,6 @@
 package com.gestaodeloja.estoque.controller;
 
+import com.gestaodeloja.estoque.dto.request.ProdutoAtualizadoRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoFiltrosRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
 import com.gestaodeloja.estoque.dto.response.ProdutoInativoResponseDto;
@@ -32,7 +33,12 @@ public class ProdutoController {
     }
 
     @PatchMapping("/inativar/{id}")
-    public ResponseEntity<ProdutoInativoResponseDto> desativaProduto(@PathVariable Long id) {
+    public ResponseEntity<ProdutoInativoResponseDto> desativarProduto(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.desativaProduto(id));
+    }
+
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<ProdutoResponseDto> atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoAtualizadoRequestDto dto) {
+        return ResponseEntity.status(HttpStatus.OK).body(produtoService.atualizaProduto(id, dto));
     }
 }
