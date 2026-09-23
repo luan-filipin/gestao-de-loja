@@ -13,9 +13,15 @@ public class CategoriaValidator {
 
     private final CategoriaRepository categoriaRepository;
 
-    public Categoria validaCategoriaExistente(Long id) {
+    public Categoria validaCategoriaExistentePeloId(Long id) {
         return categoriaRepository.findById(id).orElseThrow(
                 CategoriaNaoExistePeloIdException::new);
+    }
+
+    public void validaSeCateogriaExisteSemRetorno(Long id) {
+        if (!categoriaRepository.existsById(id)) {
+            throw new CategoriaNaoExistePeloIdException();
+        }
     }
 
     public void validaSeCategoriaJaExistePeloNome(String nome) {

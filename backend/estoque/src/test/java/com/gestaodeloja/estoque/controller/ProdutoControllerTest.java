@@ -141,7 +141,7 @@ class ProdutoControllerTest {
                         .param("id", "2")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.page.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].nome").value("Fanta"))
         ;
     }
@@ -255,6 +255,30 @@ class ProdutoControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.mensagem").value("Ja existe um produto cadastrado com esse nome."))
                 .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.path").value("/api/produto/atualizar/1"));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveLancarExceptionSeCategoriaNaoExistirParaAtualizar() throws Exception {
+
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                99L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                50,
+                "Ouro verde 2L");
+
+        mockMvc.perform(put("/api/produto/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dtoEntrada)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.mensagem").value("A categoria não existe."))
+                .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.path").value("/api/produto/atualizar/1"));
     }
 }

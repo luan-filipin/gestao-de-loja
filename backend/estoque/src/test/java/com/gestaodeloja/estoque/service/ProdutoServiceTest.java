@@ -255,6 +255,7 @@ class ProdutoServiceTest {
 
         when(produtoRepository.findById(id)).thenReturn(Optional.of(produto));
         when(produtoRepository.existsByNome(dtoEntrada.nome())).thenReturn(false);
+        when(categoriaRepository.existsById(dtoEntrada.categoriaId())).thenReturn(true);
 
         ProdutoResponseDto resultado = produtoService.atualizaProduto(id, dtoEntrada);
 
@@ -265,6 +266,7 @@ class ProdutoServiceTest {
 
         verify(produtoRepository).findById(id);
         verify(produtoRepository).existsByNome(dtoEntrada.nome());
+        verify(categoriaRepository).existsById(dtoEntrada.categoriaId());
     }
 
     @Test
@@ -288,6 +290,7 @@ class ProdutoServiceTest {
 
         verify(produtoRepository).findById(id);
         verify(produtoRepository, never()).existsByNome(dtoEntrada.nome());
+        verify(categoriaRepository, never()).findById(1L);
     }
 
     @Test
@@ -314,5 +317,34 @@ class ProdutoServiceTest {
 
         verify(produtoRepository).findById(id);
         verify(produtoRepository).existsByNome(dtoEntrada.nome());
+        verify(categoriaRepository, never()).findById(1L);
+    }
+
+    @Test
+    void deveLancarExceptionSeCategoriaNaoExistirParaAtualizar() {
+
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                50,
+                "Ouro verde 2L");
+        Produto produto = ProdutoFixture.criaProduto(id, "Coca-Cola", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null);
+
+        when(produtoRepository.findById(id)).thenReturn(Optional.of(produto));
+        when(produtoRepository.existsByNome(dtoEntrada.nome())).thenReturn(false);
+        when(categoriaRepository.existsById(dtoEntrada.categoriaId())).thenReturn(false);
+
+        assertThatThrownBy(() -> produtoService.atualizaProduto(id, dtoEntrada))
+                .isInstanceOf(CategoriaNaoExistePeloIdException.class)
+                .hasMessage("A categoria não existe.");
+
+        verify(produtoRepository).findById(id);
+        verify(produtoRepository).existsByNome(dtoEntrada.nome());
+        verify(categoriaRepository).existsById(dtoEntrada.categoriaId());
     }
 }

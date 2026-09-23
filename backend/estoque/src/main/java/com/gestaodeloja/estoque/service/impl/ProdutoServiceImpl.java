@@ -31,7 +31,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     public ProdutoResponseDto criaProduto(ProdutoRequestDto dto) {
         produtoValidator.validaSeProdutoJaExistePeloNome(dto.nome());
-        Categoria categoria = categoriaValidator.validaCategoriaExistente(dto.idCategoria());
+        Categoria categoria = categoriaValidator.validaCategoriaExistentePeloId(dto.idCategoria());
         Produto produtoSalvo = produtoRepository.save(produtoMapper.toEntity(dto, categoria));
         return produtoMapper.toResponseDto(produtoSalvo);
     }
@@ -55,6 +55,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     public ProdutoResponseDto atualizaProduto(Long id, ProdutoAtualizadoRequestDto dto) {
         Produto produto = produtoValidator.validaSeProdutoExistePeloId(id);
         produtoValidator.validaSeProdutoJaExistePeloNome(dto.nome());
+        categoriaValidator.validaSeCateogriaExisteSemRetorno(dto.categoriaId());
         produtoMapper.updateEntity(dto, produto);
         return produtoMapper.toResponseDto(produto);
     }
