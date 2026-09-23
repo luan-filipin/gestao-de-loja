@@ -31,8 +31,8 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.buscaProdutos(pageable, filtros));
     }
 
-    @GetMapping
-    public ResponseEntity<ProdutoInativoResponseDto> desativaProduto(@RequestParam Long id) {
+    @PatchMapping("/inativar/{id}")
+    public ResponseEntity<ProdutoInativoResponseDto> desativaProduto(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.desativaProduto(id));
     }
 }
