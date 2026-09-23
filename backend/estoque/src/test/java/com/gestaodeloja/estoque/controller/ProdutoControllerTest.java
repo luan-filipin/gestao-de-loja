@@ -18,8 +18,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -169,5 +168,22 @@ class ProdutoControllerTest {
                 .andExpect(jsonPath("$.mensagem").value("Campos inválidos"))
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.path").value("/api/produto"));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveInativarProdutComSuceso() throws Exception {
+
+        mockMvc.perform(patch("/api/produto/inativar/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.ativo").value(false));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveLancarExceptionSeProdutoNaoExistir() throws Exception {
+        mockMvc.perform(patch("/api/produto/inativar/99"))
+                .andExpect(status().isNotFound());
     }
 }
