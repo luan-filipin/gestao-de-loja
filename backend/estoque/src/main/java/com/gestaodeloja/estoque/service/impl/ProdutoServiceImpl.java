@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -41,6 +42,7 @@ public class ProdutoServiceImpl implements ProdutoService {
         return produtos.map(produtoMapper::toResponseDto);
     }
 
+    @Transactional
     @Override
     public ProdutoInativoResponseDto desativaProduto(Long id) {
         Produto produto = produtoValidator.validaSeProdutoExiste(id);
