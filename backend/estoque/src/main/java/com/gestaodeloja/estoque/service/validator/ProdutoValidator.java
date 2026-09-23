@@ -13,13 +13,13 @@ public class ProdutoValidator {
 
     private final ProdutoRepository produtoRepository;
 
-    public void validaSeProdutoJaExiste(String nome) {
+    public void validaSeProdutoJaExistePeloNome(String nome) {
         if (produtoRepository.existsByNome(nome)) {
             throw new ProdutoJaExistePeloNomeException();
         }
     }
 
-    public Produto validaSeProdutoExiste(Long id) {
+    public Produto validaSeProdutoExistePeloId(Long id) {
         return produtoRepository.findById(id).orElseThrow(ProdutoNaoExisteException::new);
     }
 

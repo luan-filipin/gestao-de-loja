@@ -31,7 +31,7 @@ class ProdutoValidatorTest {
         String nome = "Coca-cola";
         when(produtoRepository.existsByNome(nome)).thenReturn(true);
 
-        assertThatCode(() -> produtoValidator.validaSeProdutoJaExiste(nome))
+        assertThatCode(() -> produtoValidator.validaSeProdutoJaExistePeloNome(nome))
                 .isInstanceOf(ProdutoJaExistePeloNomeException.class)
                 .hasMessage("Ja existe um produto cadastrado com esse nome.");
 
@@ -43,7 +43,7 @@ class ProdutoValidatorTest {
         String nome = "Coca-cola";
         when(produtoRepository.existsByNome(nome)).thenReturn(false);
 
-        assertThatCode(() -> produtoValidator.validaSeProdutoJaExiste(nome))
+        assertThatCode(() -> produtoValidator.validaSeProdutoJaExistePeloNome(nome))
                 .doesNotThrowAnyException();
 
         verify(produtoRepository).existsByNome(nome);
@@ -64,7 +64,7 @@ class ProdutoValidatorTest {
         Long id = 99L;
         when(produtoRepository.findById(id)).thenReturn(java.util.Optional.empty());
 
-        assertThatCode(() -> produtoValidator.validaSeProdutoExiste(id))
+        assertThatCode(() -> produtoValidator.validaSeProdutoExistePeloId(id))
                 .isInstanceOf(ProdutoNaoExisteException.class)
                 .hasMessage("O produto não existe.");
     }
