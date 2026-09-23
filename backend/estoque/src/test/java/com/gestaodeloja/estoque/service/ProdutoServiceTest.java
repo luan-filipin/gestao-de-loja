@@ -4,9 +4,11 @@ import com.gestaodeloja.estoque.domain.Categoria;
 import com.gestaodeloja.estoque.domain.Produto;
 import com.gestaodeloja.estoque.dto.request.ProdutoFiltrosRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
+import com.gestaodeloja.estoque.dto.response.ProdutoInativoResponseDto;
 import com.gestaodeloja.estoque.dto.response.ProdutoResponseDto;
 import com.gestaodeloja.estoque.exception.CategoriaNaoExistePeloIdException;
 import com.gestaodeloja.estoque.exception.ProdutoJaExistePeloNomeException;
+import com.gestaodeloja.estoque.exception.ProdutoNaoExisteException;
 import com.gestaodeloja.estoque.fixture.CategoriaFixture;
 import com.gestaodeloja.estoque.fixture.ProdutoFixture;
 import com.gestaodeloja.estoque.mapper.ProdutoMapper;
@@ -208,4 +210,31 @@ class ProdutoServiceTest {
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getContent()).hasSize(1);
     }
+
+    @Test
+    void deveInativarProduto() {
+
+        Produto produto = ProdutoFixture.criaProduto(1L, "Coca-Cola", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null);
+
+        when(produtoRepository.findById(any(Long.class))).thenReturn(Optional.of(produto));
+
+        ProdutoInativoResponseDto result = produtoService.desativaProduto(1L);
+
+        assertThat(result.id()).isEqualTo(1L);
+        assertThat(result.ativo()).isFalse();
+
+        verify(produtoRepository).findById(1L);
+    }
+
+    @Test
+    void deveLancarExceptionAoBuscarProdutoPeloIdInexistente() {
+        when(produtoRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> produtoService.desativaProduto(1L))
+                .isInstanceOf(ProdutoNaoExisteException.class)
+                .hasMessage("O produto não existe.");
+
+        verify(produtoRepository).findById(1L);
+    }
+
 }

@@ -2,8 +2,10 @@ package com.gestaodeloja.estoque.service.impl;
 
 import com.gestaodeloja.estoque.domain.Categoria;
 import com.gestaodeloja.estoque.domain.Produto;
+import com.gestaodeloja.estoque.dto.request.ProdutoAtualizadoRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoFiltrosRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
+import com.gestaodeloja.estoque.dto.response.ProdutoInativoResponseDto;
 import com.gestaodeloja.estoque.dto.response.ProdutoResponseDto;
 import com.gestaodeloja.estoque.mapper.ProdutoMapper;
 import com.gestaodeloja.estoque.repository.ProdutoRepository;
@@ -38,4 +40,18 @@ public class ProdutoServiceImpl implements ProdutoService {
         Page<Produto> produtos = produtoRepository.findAll(ProdutoSpecification.comFiltros(filtros), pageable);
         return produtos.map(produtoMapper::toResponseDto);
     }
+
+    @Override
+    public ProdutoInativoResponseDto desativaProduto(Long id) {
+        Produto produto = produtoValidator.validaSeProdutoExiste(id);
+        produto.setAtivo(false);
+        return produtoMapper.toInativoResponseDto(produto);
+    }
+
+    @Override
+    public ProdutoResponseDto atualizaProduto(Long id, ProdutoAtualizadoRequestDto dto) {
+        return null;
+    }
+
+
 }
