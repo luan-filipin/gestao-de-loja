@@ -2,6 +2,7 @@ package com.gestaodeloja.estoque.service;
 
 import com.gestaodeloja.estoque.domain.Categoria;
 import com.gestaodeloja.estoque.domain.Produto;
+import com.gestaodeloja.estoque.dto.request.ProdutoAtualizadoRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoFiltrosRequestDto;
 import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
 import com.gestaodeloja.estoque.dto.response.ProdutoInativoResponseDto;
@@ -37,8 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProdutoServiceTest {
@@ -232,9 +232,87 @@ class ProdutoServiceTest {
 
         assertThatThrownBy(() -> produtoService.desativaProduto(1L))
                 .isInstanceOf(ProdutoNaoExisteException.class)
-                .hasMessage("O produto não existe.");
+                .hasMessage("Não existe um produto com esse id.");
 
         verify(produtoRepository).findById(1L);
     }
 
+    @Test
+    void deveAtualizaProdutoComSucesso() {
+
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                50,
+                "Ouro verde 2L");
+
+        Produto produto = ProdutoFixture.criaProduto(id, "Coca-Cola", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null);
+
+        when(produtoRepository.findById(id)).thenReturn(Optional.of(produto));
+        when(produtoRepository.existsByNome(dtoEntrada.nome())).thenReturn(false);
+
+        ProdutoResponseDto resultado = produtoService.atualizaProduto(id, dtoEntrada);
+
+        assertThat(resultado).isNotNull();
+        assertThat(resultado.nome()).isEqualTo("Ouro verde");
+        assertThat(resultado.categoriaId()).isEqualTo(1L);
+        assertThat(resultado.ativo()).isTrue();
+
+        verify(produtoRepository).findById(id);
+        verify(produtoRepository).existsByNome(dtoEntrada.nome());
+    }
+
+    @Test
+    void deveLancarExceptionSeProdutoNaoExistirPeloIdParaAtualizar() {
+        Long id = 99L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                50,
+                "Ouro verde 2L");
+
+        when(produtoRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> produtoService.atualizaProduto(id, dtoEntrada))
+                .isInstanceOf(ProdutoNaoExisteException.class)
+                .hasMessage("Não existe um produto com esse id.");
+
+        verify(produtoRepository).findById(id);
+        verify(produtoRepository, never()).existsByNome(dtoEntrada.nome());
+    }
+
+    @Test
+    void deveLancarExceptionSeProdutoJaExistePeloNomeParaAtualizar() {
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Coca-Cola",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                50,
+                "Coca-Cola 2L");
+
+        Produto produto = ProdutoFixture.criaProduto(id, "Coca-Cola", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null);
+
+        when(produtoRepository.findById(id)).thenReturn(Optional.of(produto));
+        when(produtoRepository.existsByNome(dtoEntrada.nome())).thenReturn(true);
+
+        assertThatThrownBy(() -> produtoService.atualizaProduto(id, dtoEntrada))
+                .isInstanceOf(ProdutoJaExistePeloNomeException.class)
+                .hasMessage("Ja existe um produto cadastrado com esse nome.");
+
+        verify(produtoRepository).findById(id);
+        verify(produtoRepository).existsByNome(dtoEntrada.nome());
+    }
 }

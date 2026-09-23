@@ -105,7 +105,7 @@ class GlobalExceptionHandlerTest {
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(result.getBody()).isNotNull();
-        assertThat(result.getBody().getMensagem()).isEqualTo("O produto não existe.");
+        assertThat(result.getBody().getMensagem()).isEqualTo("Não existe um produto com esse id.");
         assertThat(result.getBody().getStatus()).isEqualTo(404);
         assertThat(result.getBody().getPath()).isEqualTo("/api/produto");
     }

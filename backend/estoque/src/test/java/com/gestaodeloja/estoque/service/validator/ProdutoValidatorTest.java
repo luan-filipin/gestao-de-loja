@@ -66,6 +66,6 @@ class ProdutoValidatorTest {
 
         assertThatCode(() -> produtoValidator.validaSeProdutoExistePeloId(id))
                 .isInstanceOf(ProdutoNaoExisteException.class)
-                .hasMessage("O produto não existe.");
+                .hasMessage("Não existe um produto com esse id.");
     }
 }
