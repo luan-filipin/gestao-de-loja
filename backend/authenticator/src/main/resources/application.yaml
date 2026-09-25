@@ -16,3 +16,8 @@ spring:
 jwt:
   private-key: classpath:keys/private.pem
   public-key: classpath:keys/public.pem
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
