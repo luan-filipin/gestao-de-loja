@@ -26,10 +26,17 @@ public interface ProdutoMapper {
     ProdutoInativoResponseDto toInativoResponseDto(Produto produto);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "categoria", source = "categoriaId", qualifiedByName = "categoriaIdParaCategoria")
     @Mapping(target = "ativo", ignore = true)
     @Mapping(target = "dataCadastro", ignore = true)
     @Mapping(target = "dataAtualizacao", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntity(ProdutoAtualizadoRequestDto dto, @MappingTarget Produto produto);
 
+    @Named("categoriaIdParaCategoria")
+    default Categoria categoriaIdParaCategoria(Long categoriaId) {
+        Categoria categoria = new Categoria();
+        categoria.setId(categoriaId);
+        return categoria;
+    }
 }
