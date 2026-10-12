@@ -89,6 +89,50 @@ class ProdutoControllerTest {
     }
 
     @Test
+    void deveLancarExceptionSeEstoqueMinimoMaiorQueMaximo() throws Exception {
+        ProdutoRequestDto dto = ProdutoFixture.criaProdutoRequestDto(
+                "Coca-cola",
+                1L,
+                10,
+                new BigDecimal("1000"),
+                new BigDecimal("8.00"),
+                10,
+                5,
+                "Fanta 2L");
+
+        mockMvc.perform(post("/api/produto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value("O estoque minimo deve ser menor que o estoque maximo."))
+                .andExpect(jsonPath("$.path").value("/api/produto"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+    @Test
+    void deveLancarExceptionSeEstoqueMinimoIgualAoMaximo() throws Exception {
+        ProdutoRequestDto dto = ProdutoFixture.criaProdutoRequestDto(
+                "Coca-cola",
+                1L,
+                10,
+                new BigDecimal("1000"),
+                new BigDecimal("8.00"),
+                10,
+                10,
+                "Fanta 2L");
+
+        mockMvc.perform(post("/api/produto")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value("O estoque minimo deve ser menor que o estoque maximo."))
+                .andExpect(jsonPath("$.path").value("/api/produto"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+    @Test
     void deveLancarExceptionSeCategoriaNaoExistir() throws Exception {
         ProdutoRequestDto dto = ProdutoFixture.criaProdutoRequestDto(
                 "Fanta",
