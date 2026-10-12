@@ -1,6 +1,7 @@
 package com.gestaodeloja.estoque.service.validator;
 
 import com.gestaodeloja.estoque.domain.Produto;
+import com.gestaodeloja.estoque.exception.EstoqueMinimoMaiorOuIgualMaximo;
 import com.gestaodeloja.estoque.exception.ProdutoJaExistePeloNomeException;
 import com.gestaodeloja.estoque.exception.ProdutoNaoExisteException;
 import com.gestaodeloja.estoque.repository.ProdutoRepository;
@@ -67,5 +68,34 @@ class ProdutoValidatorTest {
         assertThatCode(() -> produtoValidator.validaSeProdutoExistePeloId(id))
                 .isInstanceOf(ProdutoNaoExisteException.class)
                 .hasMessage("Não existe um produto com esse id.");
+    }
+
+    @Test
+    void deveLancarExceptionSeEstoqueMinimoForMaiorAoMaximo() {
+        Integer estoqueMinimo = 10;
+        Integer estoqueMaximo = 5;
+
+        assertThatCode(() -> produtoValidator.validaSeEstoqueMinimoMaiorOuIgualAoMaximo(estoqueMinimo, estoqueMaximo))
+                .isInstanceOf(EstoqueMinimoMaiorOuIgualMaximo.class)
+                .hasMessage("O estoque minimo deve ser menor que o estoque maximo.");
+    }
+
+    @Test
+    void deveLancarExceptionSeEstoqueMinimoForIgualAoMaximo() {
+        Integer estoqueMinimo = 5;
+        Integer estoqueMaximo = 5;
+
+        assertThatCode(() -> produtoValidator.validaSeEstoqueMinimoMaiorOuIgualAoMaximo(estoqueMinimo, estoqueMaximo))
+                .isInstanceOf(EstoqueMinimoMaiorOuIgualMaximo.class)
+                .hasMessage("O estoque minimo deve ser menor que o estoque maximo.");
+    }
+
+    @Test
+    void naoDeveLancarExceptionSeEstoqueMinimoForMenorQueOMaximo() {
+        Integer estoqueMinimo = 1;
+        Integer estoqueMaximo = 5;
+
+        assertThatCode(() -> produtoValidator.validaSeEstoqueMinimoMaiorOuIgualAoMaximo(estoqueMinimo, estoqueMaximo))
+                .doesNotThrowAnyException();
     }
 }
