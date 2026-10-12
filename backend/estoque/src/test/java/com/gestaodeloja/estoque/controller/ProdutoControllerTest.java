@@ -256,6 +256,52 @@ class ProdutoControllerTest {
 
     @Test
     @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveLancarExceptionSeEstoqueMinimoMaiorQueMaximoAtualizar() throws Exception {
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                10,
+                5,
+                "Ouro verde 2L");
+
+        mockMvc.perform(put("/api/produto/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dtoEntrada)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value("O estoque minimo deve ser menor que o estoque maximo."))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.path").value("/api/produto/atualizar/1"));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
+    void deveLancarExceptionSeEstoqueMinimoIgualAoMaximoAtualizar() throws Exception {
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                10,
+                10,
+                "Ouro verde 2L");
+
+        mockMvc.perform(put("/api/produto/atualizar/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dtoEntrada)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value("O estoque minimo deve ser menor que o estoque maximo."))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.path").value("/api/produto/atualizar/1"));
+    }
+
+    @Test
+    @DataSet(value = {"datasets/categoria.xml", "datasets/produto.xml"})
     void deveLancarExceptionSeProdutoNaoExistirParaAtualizar() throws Exception {
 
         Long id = 99L;

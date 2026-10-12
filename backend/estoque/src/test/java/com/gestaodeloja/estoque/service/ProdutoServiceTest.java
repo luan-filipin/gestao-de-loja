@@ -339,6 +339,59 @@ class ProdutoServiceTest {
     }
 
     @Test
+    void deveLancarExceptionSeEstoqueMinimoMaiorQueMaximo() {
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                10,
+                5,
+                "Ouro verde 2L");
+
+        Produto produto = ProdutoFixture.criaProduto(id, "Coca-Cola", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null);
+
+        when(produtoRepository.findById(id)).thenReturn(Optional.of(produto));
+
+        assertThatThrownBy(() -> produtoService.atualizaProduto(id, dtoEntrada))
+                .isInstanceOf(EstoqueMinimoMaiorOuIgualMaximo.class)
+                .hasMessage("O estoque minimo deve ser menor que o estoque maximo.");
+
+        verify(produtoRepository).findById(id);
+        verify(produtoRepository, never()).existsByNome(dtoEntrada.nome());
+        verify(categoriaRepository, never()).findById(1L);
+    }
+
+    @Test
+    void deveLancarExceptionSeEstoqueMinimoIgualAoMaximo() {
+        Long id = 1L;
+        ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
+                "Ouro verde",
+                1L,
+                10,
+                new BigDecimal("1000.0"),
+                new BigDecimal("8.0"),
+                5,
+                5,
+                "Ouro verde 2L");
+
+        Produto produto = ProdutoFixture.criaProduto(id, "Coca-Cola", 10, new BigDecimal("1000"), new BigDecimal("8.00"), 10, 20, "", true, LocalDateTime.now(), null);
+
+        when(produtoRepository.findById(id)).thenReturn(Optional.of(produto));
+
+        assertThatThrownBy(() -> produtoService.atualizaProduto(id, dtoEntrada))
+                .isInstanceOf(EstoqueMinimoMaiorOuIgualMaximo.class)
+                .hasMessage("O estoque minimo deve ser menor que o estoque maximo.");
+
+        verify(produtoRepository).findById(id);
+        verify(produtoRepository, never()).existsByNome(dtoEntrada.nome());
+        verify(categoriaRepository, never()).findById(1L);
+    }
+
+
+    @Test
     void deveLancarExceptionSeProdutoJaExistePeloNomeParaAtualizar() {
         Long id = 1L;
         ProdutoAtualizadoRequestDto dtoEntrada = ProdutoFixture.criaProdutoAtualizadoRequestDto(
