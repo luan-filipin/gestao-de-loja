@@ -8,6 +8,7 @@ import com.gestaodeloja.estoque.dto.request.ProdutoRequestDto;
 import com.gestaodeloja.estoque.dto.response.ProdutoInativoResponseDto;
 import com.gestaodeloja.estoque.dto.response.ProdutoResponseDto;
 import com.gestaodeloja.estoque.exception.CategoriaNaoExistePeloIdException;
+import com.gestaodeloja.estoque.exception.EstoqueMinimoMaiorOuIgualMaximo;
 import com.gestaodeloja.estoque.exception.ProdutoJaExistePeloNomeException;
 import com.gestaodeloja.estoque.exception.ProdutoNaoExisteException;
 import com.gestaodeloja.estoque.fixture.CategoriaFixture;
@@ -119,6 +120,50 @@ class ProdutoServiceTest {
         assertThatThrownBy(() -> produtoService.criaProduto(dto))
                 .isInstanceOf(ProdutoJaExistePeloNomeException.class)
                 .hasMessage("Ja existe um produto cadastrado com esse nome.");
+
+        verify(produtoRepository).existsByNome(dto.nome());
+    }
+
+    @Test
+    void deveLancarExcptionSeEstoqueMinimoMaiorQueMaximo() {
+
+        ProdutoRequestDto dto = ProdutoFixture.criaProdutoRequestDto(
+                "Coca-Cola",
+                1L,
+                10,
+                new BigDecimal("1000"),
+                new BigDecimal("8.00"),
+                10,
+                5,
+                "Coca-Cola 2L");
+
+        when(produtoRepository.existsByNome(dto.nome())).thenReturn(false);
+
+        assertThatThrownBy(() -> produtoService.criaProduto(dto))
+                .isInstanceOf(EstoqueMinimoMaiorOuIgualMaximo.class)
+                .hasMessage("O estoque minimo deve ser menor que o estoque maximo.");
+
+        verify(produtoRepository).existsByNome(dto.nome());
+    }
+
+    @Test
+    void deveLancarExcptionSeEstoqueMinimoIgualAoMaximo() {
+
+        ProdutoRequestDto dto = ProdutoFixture.criaProdutoRequestDto(
+                "Coca-Cola",
+                1L,
+                10,
+                new BigDecimal("1000"),
+                new BigDecimal("8.00"),
+                5,
+                5,
+                "Coca-Cola 2L");
+
+        when(produtoRepository.existsByNome(dto.nome())).thenReturn(false);
+
+        assertThatThrownBy(() -> produtoService.criaProduto(dto))
+                .isInstanceOf(EstoqueMinimoMaiorOuIgualMaximo.class)
+                .hasMessage("O estoque minimo deve ser menor que o estoque maximo.");
 
         verify(produtoRepository).existsByNome(dto.nome());
     }

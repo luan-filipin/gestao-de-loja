@@ -1,6 +1,7 @@
 package com.gestaodeloja.estoque.service.validator;
 
 import com.gestaodeloja.estoque.domain.Produto;
+import com.gestaodeloja.estoque.exception.EstoqueMinimoMaiorOuIgualMaximo;
 import com.gestaodeloja.estoque.exception.ProdutoJaExistePeloNomeException;
 import com.gestaodeloja.estoque.exception.ProdutoNaoExisteException;
 import com.gestaodeloja.estoque.repository.ProdutoRepository;
@@ -21,6 +22,12 @@ public class ProdutoValidator {
 
     public Produto validaSeProdutoExistePeloId(Long id) {
         return produtoRepository.findById(id).orElseThrow(ProdutoNaoExisteException::new);
+    }
+
+    public void validaSeEstoqueMinimoMaiorOuIgualAoMaximo(Integer estoqueMinimo, Integer estoqueMaximo) {
+        if (estoqueMinimo >= estoqueMaximo) {
+            throw new EstoqueMinimoMaiorOuIgualMaximo();
+        }
     }
 
 }
