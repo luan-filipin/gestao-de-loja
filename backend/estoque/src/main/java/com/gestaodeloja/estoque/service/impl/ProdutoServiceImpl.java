@@ -55,6 +55,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     public ProdutoResponseDto atualizaProduto(Long id, ProdutoAtualizadoRequestDto dto) {
         Produto produto = produtoValidator.validaSeProdutoExistePeloId(id);
+        produtoValidator.validaSeEstoqueMinimoMaiorOuIgualAoMaximo(dto.estoqueMinimo(), dto.estoqueMaximo());
         produtoValidator.validaSeProdutoJaExistePeloNome(dto.nome());
         categoriaValidator.validaSeCateogriaExisteSemRetorno(dto.categoriaId());
         produtoMapper.updateEntity(dto, produto);
