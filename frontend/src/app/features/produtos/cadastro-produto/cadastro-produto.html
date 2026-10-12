@@ -1,0 +1,236 @@
+
+<div class="page">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">
+        <span class="material-symbols-outlined">inventory_2</span>
+      </div>
+
+      <div>
+        <h1>Gestão de Estoque</h1>
+        <p>Controle seus produtos com facilidade</p>
+      </div>
+    </div>
+
+    <span class="user-label">Painel administrativo</span>
+  </header>
+
+  <main class="container">
+    <nav class="breadcrumb">
+      <span>Início</span>
+      <span>/</span>
+      <span>Produtos</span>
+      <span>/</span>
+      <strong>Novo cadastro</strong>
+    </nav>
+
+    <section class="form-card">
+      <div class="form-heading">
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+          rel="stylesheet"
+        />
+        <div>
+          <span class="eyebrow">INVENTÁRIO</span>
+          <h2>Cadastrar produto</h2>
+          <p>Informe os dados do produto para continuar.</p>
+        </div>
+
+        <div class="product-icon">
+          <span class="material-symbols-outlined">add_box</span>
+        </div>
+      </div>
+
+      <div
+        *ngIf="mensagem"
+        class="alert"
+        [class.alert-error]="tipoMensagem === 'erro'"
+        [class.alert-success]="tipoMensagem === 'sucesso'"
+        role="status"
+      >
+        {{ mensagem }}
+      </div>
+
+      <form [formGroup]="produtoForm" (ngSubmit)="salvarProduto()">
+        <section class="form-section">
+          <h3>
+            <span class="material-symbols-outlined">inventory</span>
+            Informações gerais
+          </h3>
+
+          <div class="form-grid">
+            <div class="field field-full">
+              <label for="nome">Nome do produto *</label>
+              <input
+                id="nome"
+                type="text"
+                formControlName="nome"
+                placeholder="Ex.: Teclado mecânico"
+                [class.invalid]="campoInvalido('nome')"
+              />
+              <small *ngIf="campoInvalido('nome')">
+                Informe um nome com pelo menos 3 caracteres.
+              </small>
+            </div>
+
+            <div class="field">
+              <label for="sku">Código do produto (SKU) *</label>
+              <input
+                id="sku"
+                type="text"
+                formControlName="sku"
+                placeholder="Ex.: PROD-001"
+                [class.invalid]="campoInvalido('sku')"
+              />
+              <small *ngIf="campoInvalido('sku')">
+                O código do produto é obrigatório.
+              </small>
+            </div>
+
+            <div class="field">
+              <label for="categoria">Categoria *</label>
+              <select
+                id="categoria"
+                formControlName="categoria"
+                [class.invalid]="campoInvalido('categoria')"
+              >
+                <option value="">Selecione uma categoria</option>
+                <option *ngFor="let categoria of categorias"
+                        [value]="categoria">
+                  {{ categoria }}
+                </option>
+              </select>
+              <small *ngIf="campoInvalido('categoria')">
+                Selecione uma categoria.
+              </small>
+            </div>
+
+            <div class="field field-full">
+              <label for="fornecedor">Fornecedor</label>
+              <input
+                id="fornecedor"
+                type="text"
+                formControlName="fornecedor"
+                placeholder="Nome do fornecedor"
+              />
+            </div>
+
+            <div class="field field-full">
+              <label for="descricao">Descrição</label>
+              <textarea
+                id="descricao"
+                formControlName="descricao"
+                rows="3"
+                placeholder="Descreva as características do produto..."
+              ></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3>
+            <span class="material-symbols-outlined">payments</span>
+            Preços e estoque
+          </h3>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="precoCusto">Preço de custo (R$) *</label>
+              <input
+                id="precoCusto"
+                type="number"
+                formControlName="precoCusto"
+                min="0.01"
+                step="0.01"
+                [class.invalid]="campoInvalido('precoCusto')"
+              />
+              <small *ngIf="campoInvalido('precoCusto')">
+                Informe um custo maior que zero.
+              </small>
+            </div>
+
+            <div class="field">
+              <label for="precoVenda">Preço de venda (R$) *</label>
+              <input
+                id="precoVenda"
+                type="number"
+                formControlName="precoVenda"
+                min="0.01"
+                step="0.01"
+                [class.invalid]="campoInvalido('precoVenda')"
+              />
+              <small *ngIf="campoInvalido('precoVenda')">
+                Informe um preço maior que zero.
+              </small>
+            </div>
+
+            <div class="field">
+              <label for="quantidade">Quantidade em estoque *</label>
+              <input
+                id="quantidade"
+                type="number"
+                formControlName="quantidade"
+                min="0"
+                step="1"
+                [class.invalid]="campoInvalido('quantidade')"
+              />
+              <small *ngIf="campoInvalido('quantidade')">
+                A quantidade não pode ser negativa.
+              </small>
+            </div>
+
+            <div class="field">
+              <label for="estoqueMinimo">Estoque mínimo *</label>
+              <input
+                id="estoqueMinimo"
+                type="number"
+                formControlName="estoqueMinimo"
+                min="0"
+                step="1"
+              />
+              <small class="hint">
+                Quantidade mínima antes do alerta de reposição.
+              </small>
+            </div>
+          </div>
+
+          <div class="profit-preview">
+            <div>
+              <span class="material-symbols-outlined">trending_up</span>
+              <div>
+                <strong>Margem de lucro estimada</strong>
+                <p>Calculada com base no custo e no preço de venda.</p>
+              </div>
+            </div>
+
+            <strong
+              class="profit-value"
+              [class.negative]="margemLucro < 0"
+            >
+              {{ margemLucro | number:'1.2-2' }}%
+            </strong>
+          </div>
+        </section>
+
+        <footer class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancelar()"
+          >
+            Cancelar
+          </button>
+
+          <button type="submit" class="btn btn-primary">
+            <span class="material-symbols-outlined">save</span>
+            Salvar produto
+          </button>
+        </footer>
+      </form>
+    </section>
+
+    <p class="footer-note">
+      * Campos obrigatórios
+    </p>
+  </main>
+</div>
