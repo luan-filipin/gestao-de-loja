@@ -1,0 +1,82 @@
+
+<aside class="sidebar" [class.collapsed]="collapsed()">
+
+  <div class="sidebar-header">
+    @if (!collapsed()) {
+      <span class="sidebar-title">Gestão de Loja</span>
+    }
+
+    <button
+      type="button"
+      class="toggle-button"
+      (click)="toggleSidebar()"
+      [attr.aria-label]="collapsed() ? 'Expandir menu' : 'Recolher menu'"
+      [attr.aria-expanded]="!collapsed()">
+      ☰
+    </button>
+  </div>
+
+  <nav class="sidebar-nav" aria-label="Menu principal">
+
+    <a
+      class="menu-item"
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [attr.title]="collapsed() ? 'Dashboard' : null">
+
+      <span class="menu-icon" aria-hidden="true">▦</span>
+
+      @if (!collapsed()) {
+        <span class="menu-label">Dashboard</span>
+      }
+    </a>
+
+    <button
+      type="button"
+      class="menu-item"
+      (click)="toggleProduct()"
+      [attr.aria-expanded]="productOpen() && !collapsed()"
+      aria-controls="produto-submenu"
+      [attr.title]="collapsed() ? 'Produto' : null">
+
+      <span class="menu-icon" aria-hidden="true">▣</span>
+
+      @if (!collapsed()) {
+        <span class="menu-label">Produto</span>
+
+        <span
+          class="menu-arrow"
+          [class.rotated]="productOpen()"
+          aria-hidden="true">
+          ›
+        </span>
+      }
+    </button>
+
+    <div
+      id="produto-submenu"
+      class="submenu"
+      [class.open]="productOpen() && !collapsed()"
+      [attr.inert]="productOpen() && !collapsed() ? null : ''">
+
+      <div class="submenu-content">
+        <div class="submenu-links">
+
+          <a
+            routerLink="/produtos/cadastrar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            Cadastrar
+          </a>
+
+          <a
+            routerLink="/produtos/novo"
+            routerLinkActive="active">
+            Gerenciar
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+</aside>
